@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Code Helper Hub</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <canvas id="backgroundCanvas"></canvas>
+  <div class="container" role="main" aria-label="Main app">
+    <h2>Code Helper Hub</h2>
+    <button onclick="showSection('register')" id="registerBtn">Create Account</button>
+    <button onclick="showSection('scripts')" id="scriptsBtn">Find Scripts & Models</button>
+    <button onclick="showSection('ai')" id="aiBtn">AI Coding Assistant</button>
+    <div id="mainSection" style="margin-top:30px;"></div>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>
