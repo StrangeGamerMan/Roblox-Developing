@@ -188,20 +188,43 @@ function renderAI(main) {
     </div>
   `;
 
-  window.sendAIMessage = function() {
+  window.sendAIMessage = async function() {
     let input = document.getElementById('aiInput');
     let text = input.value.trim();
     if (!text) return;
     if (!chats[currentChat]) chats[currentChat] = { name: '', messages: [] };
     chats[currentChat].messages.push({ role: 'user', text });
-    // Simulate AI response (replace with real API call)
-    setTimeout(() => {
-      chats[currentChat].messages.push({ role: 'ai', text: "This is a demo AI response. For real answers, connect to OpenAI or Gemini API." });
-      saveChats();
-      renderAI(main);
-    }, 800);
     saveChats();
     renderAI(main);
+
+    // Call OpenAI API
+    try {
+      const response = await fetch("https://api.openai.com/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${OPENAI_API_KEY}`,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          model: "gpt-3.5-turbo",
+          messages: chats[currentChat].messages.map(m => ({
+            role: m.role,
+            content: m.text
+          })),
+          max_tokens: 256,
+          temperature: 0.7
+        })
+      });
+      const data = await response.json();
+      const aiText = data.choices?.[0]?.message?.content || "Sorry, no response from AI.";
+      chats[currentChat].messages.push({ role: 'ai', text: aiText });
+      saveChats();
+      renderAI(main);
+    } catch (e) {
+      chats[currentChat].messages.push({ role: 'ai', text: "Error: Could not connect to OpenAI API." });
+      saveChats();
+      renderAI(main);
+    }
     input.value = '';
   };
 
@@ -352,3 +375,53 @@ function renderAccount(main) {
 
 // --- Default Tab ---
 showTab('ai');
+
+// --- Optional: Auto-login or greet user on load ---
+const user = store.get('user', null);
+if (user) {
+  // Optionally, show a welcome message or auto-switch to account tab
+  // showTab('account');
+  console.log(`Welcome back, ${user.username}!`);
+}
+
+// --- Optional: Support browser navigation (back/forward) ---
+window.onpopstate = function(event) {
+  if (event.state && event.state.tab) {
+    showTab(event.state.tab);
+  }
+};
+
+// --- Optional: Update URL and history when switching tabs ---
+const navButtons = document.querySelectorAll('nav button');
+navButtons.forEach(btn => {
+  btn.addEventListener('click', function() {
+    const tab = this.textContent.toLowerCase().replace(/[^a-z]/g, '');
+    history.pushState({ tab }, '', `#${tab}`);
+  });
+});
+
+// --- Optional: Load tab from URL hash on page load ---
+window.addEventListener('DOMContentLoaded', () => {
+  const hash = window.location.hash.replace('#', '');
+  if (hash) {
+    showTab(hash);
+  }
+});
+
+// --- Helper: Example function to load API key (if you add one) ---
+/*
+function getOpenAIKey() {
+  // If you have /config/openai.js loaded, this will work:
+  return typeof OPENAI_API_KEY !== 'undefined' ? OPENAI_API_KEY : null;
+}
+*/
+
+// --- Helper: Example for future external data fetching ---
+/*
+async function fetchRobloxInfo(query) {
+  // Example: fetch from a Roblox API or forum
+  const res = await fetch(`https://api.roblox.com/some-endpoint?q=${encodeURIComponent(query)}`);
+  const data = await res.json();
+  return data;
+}
+*/
