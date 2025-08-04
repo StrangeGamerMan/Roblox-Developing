@@ -1,4 +1,4 @@
-// Particle Network Background (same as before)
+// --- Particle Background ---
 const canvas = document.getElementById('backgroundCanvas');
 const ctx = canvas.getContext('2d');
 let width, height;
@@ -99,7 +99,7 @@ function animate() {
 }
 animate();
 
-// Button & card ripple effect
+// --- Ripple Effect ---
 document.addEventListener('DOMContentLoaded', () => {
   document.body.addEventListener('click', function(e) {
     if (e.target.tagName === 'BUTTON' || e.target.classList.contains('feature-card')) {
@@ -116,77 +116,239 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
-// Section switching logic
-function showSection(section) {
+// --- Simple Local Datastore ---
+const store = {
+  get(key, fallback) {
+    try {
+      return JSON.parse(localStorage.getItem(key)) || fallback;
+    } catch { return fallback; }
+  },
+  set(key, value) {
+    localStorage.setItem(key, JSON.stringify(value));
+  }
+};
+
+// --- Tabs ---
+function showTab(tab) {
   const main = document.getElementById('mainSection');
-  if (section === 'register') {
-    main.innerHTML = `
-      <section>
-        <h2>Create Account</h2>
-        <input type="text" placeholder="Username" id="regUser">
-        <input type="password" placeholder="Password" id="regPass">
-        <button onclick="alert('Registration is a demo!')">Register</button>
-        <div class="helper-text">No real registration yet (demo only)</div>
-      </section>
-    `;
-  } else if (section === 'scripts') {
-    main.innerHTML = `
-      <section>
-        <h2>Find Scripts & Models</h2>
-        <input type="text" placeholder="Search scripts..." id="searchScripts">
-        <ul id="scriptList" style="text-align:left;margin-top:15px;">
-          <li><b>Example Script 1</b> - <code>print("Hello World")</code></li>
-          <li><b>Example Model 2</b> - <code>function add(a,b) return a+b end</code></li>
-        </ul>
-        <div class="helper-text">Add your own scripts/models here!</div>
-      </section>
-    `;
-  } else if (section === 'ai') {
-    main.innerHTML = `
-      <section>
-        <h2>AI Coding Assistant</h2>
-        <textarea placeholder="Ask a coding question..." id="aiQuestion"></textarea>
-        <button onclick="askAIDemo()">Ask AI</button>
-        <div id="aiResponse" class="helper-text"></div>
-        <div class="helper-text">This is a demo. Connect to an AI API for real answers!</div>
-      </section>
-    `;
-  } else if (section === 'community') {
-    main.innerHTML = `
-      <section>
-        <h2>Community</h2>
-        <p>Join our forums and chat with other developers!</p>
-        <div class="helper-text">Feature coming soon.</div>
-      </section>
-    `;
-  } else if (section === 'resources') {
-    main.innerHTML = `
-      <section>
-        <h2>Resources</h2>
-        <ul>
-          <li><a href="https://developer.mozilla.org/" target="_blank">MDN Web Docs</a></li>
-          <li><a href="https://www.w3schools.com/" target="_blank">W3Schools</a></li>
-          <li><a href="https://stackoverflow.com/" target="_blank">Stack Overflow</a></li>
-        </ul>
-      </section>
-    `;
-  } else if (section === 'about') {
-    main.innerHTML = `
-      <section>
-        <h2>About</h2>
-        <p>Code Helper Hub is your all-in-one platform for coding help, scripts, models, and more.</p>
-      </section>
-    `;
-  } else if (section === 'contact') {
-    main.innerHTML = `
-      <section>
-        <h2>Contact</h2>
-        <p>Email: <a href="mailto:info@codehelperhub.com">info@codehelperhub.com</a></p>
-        <div class="helper-text">Contact form coming soon.</div>
-      </section>
+  if (tab === 'ai') renderAI(main);
+  else if (tab === 'scripts') renderScripts(main);
+  else if (tab === 'forum') renderForum(main);
+  else if (tab === 'resources') renderResources(main);
+  else if (tab === 'account') renderAccount(main);
+  else main.innerHTML = '';
+}
+window.showTab = showTab;
+
+// --- AI Chat Tab ---
+function renderAI(main) {
+  let chats = store.get('ai_chats', []);
+  let currentChat = store.get('ai_current_chat', null);
+
+  function saveChats() {
+    store.set('ai_chats', chats);
+    store.set('ai_current_chat', currentChat);
+  }
+
+  function renderChatList() {
+    return `
+      <div class="saved-chats-list">
+        ${chats.map((c, i) => `
+          <button onclick="loadChat(${i})">${c.name || 'Chat ' + (i+1)}</button>
+          <button onclick="deleteChat(${i})" style="color:red;">🗑️</button>
+        `).join('')}
+        <button onclick="newChat()">+ New Chat</button>
+      </div>
     `;
   }
+
+  function renderChat() {
+    let chat = chats[currentChat] || { messages: [] };
+    return `
+      <div class="ai-chat">
+        ${chat.messages.map(m => `
+          <div class="ai-msg ${m.role}"><b>${m.role === 'user' ? 'You' : 'AI'}:</b> ${m.text}</div>
+        `).join('')}
+      </div>
+      <div class="ai-chat-controls">
+        <input id="aiInput" placeholder="Ask about Roblox scripting, models, APIs, etc..." onkeydown="if(event.key==='Enter'){sendAIMessage();}">
+        <button onclick="sendAIMessage()">Send</button>
+      </div>
+    `;
+  }
+
+  main.innerHTML = `
+    <div class="tab-content">
+      <h2>AI Assistant</h2>
+      <div>
+        ${renderChatList()}
+        <div id="aiChatArea">${renderChat()}</div>
+      </div>
+      <div class="helper-text">Ask anything about Roblox game development, scripting, APIs, and more!</div>
+    </div>
+  `;
+
+  window.sendAIMessage = function() {
+    let input = document.getElementById('aiInput');
+    let text = input.value.trim();
+    if (!text) return;
+    if (!chats[currentChat]) chats[currentChat] = { name: '', messages: [] };
+    chats[currentChat].messages.push({ role: 'user', text });
+    // Simulate AI response (replace with real API call)
+    setTimeout(() => {
+      chats[currentChat].messages.push({ role: 'ai', text: "This is a demo AI response. For real answers, connect to OpenAI or Gemini API." });
+      saveChats();
+      renderAI(main);
+    }, 800);
+    saveChats();
+    renderAI(main);
+    input.value = '';
+  };
+
+  window.loadChat = function(i) {
+    currentChat = i;
+    saveChats();
+    renderAI(main);
+  };
+
+  window.deleteChat = function(i) {
+    if (confirm("Delete this chat?")) {
+      chats.splice(i, 1);
+      if (currentChat >= chats.length) currentChat = chats.length - 1;
+      saveChats();
+      renderAI(main);
+    }
+  };
+
+  window.newChat = function() {
+    chats.push({ name: '', messages: [] });
+    currentChat = chats.length - 1;
+    saveChats();
+    renderAI(main);
+  };
 }
 
-// Demo AI response
-function 
+// --- Scripts & Models Tab ---
+function renderScripts(main) {
+  let scripts = store.get('scripts', [
+    { name: "Hello World", code: 'print("Hello World")', desc: "Basic print script for Roblox." }
+  ]);
+  main.innerHTML = `
+    <div class="tab-content">
+      <h2>Scripts & Models</h2>
+      <input id="scriptSearch" placeholder="Search scripts/models..." oninput="filterScripts()">
+      <div id="scriptsList">
+        ${scripts.map((s, i) => `
+          <div style="margin-bottom:18px;">
+            <b>${s.name}</b> <span style="color:#888;">- ${s.desc}</span>
+            <pre style="background:#f7f7f7;padding:8px;border-radius:8px;">${s.code}</pre>
+          </div>
+        `).join('')}
+      </div>
+      <h3>Add New Script/Model</h3>
+      <input id="newScriptName" placeholder="Name">
+      <input id="newScriptDesc" placeholder="Description">
+      <textarea id="newScriptCode" placeholder="Paste your code here"></textarea>
+      <button onclick="addScript()">Add</button>
+    </div>
+  `;
+  window.filterScripts = function() {
+    let val = document.getElementById('scriptSearch').value.toLowerCase();
+    let filtered = scripts.filter(s => s.name.toLowerCase().includes(val) || s.desc.toLowerCase().includes(val) || s.code.toLowerCase().includes(val));
+    document.getElementById('scriptsList').innerHTML = filtered.map((s, i) => `
+      <div style="margin-bottom:18px;">
+        <b>${s.name}</b> <span style="color:#888;">- ${s.desc}</span>
+        <pre style="background:#f7f7f7;padding:8px;border-radius:8px;">${s.code}</pre>
+      </div>
+    `).join('');
+  };
+  window.addScript = function() {
+    let name = document.getElementById('newScriptName').value.trim();
+    let desc = document.getElementById('newScriptDesc').value.trim();
+    let code = document.getElementById('newScriptCode').value.trim();
+    if (!name || !code) return alert("Name and code required!");
+    scripts.push({ name, desc, code });
+    store.set('scripts', scripts);
+    renderScripts(main);
+  };
+}
+
+// --- Forum Tab ---
+function renderForum(main) {
+  let posts = store.get('forum_posts', [
+    { title: "How do I use RemoteEvents?", body: "I'm new to Roblox scripting. How do I use RemoteEvents to communicate between server and client?" }
+  ]);
+  main.innerHTML = `
+    <div class="tab-content">
+      <h2>Forum</h2>
+      <div>
+        ${posts.map(p => `
+          <div class="forum-post">
+            <div class="forum-title">${p.title}</div>
+            <div class="forum-body">${p.body}</div>
+          </div>
+        `).join('')}
+      </div>
+      <h3>New Post</h3>
+      <input id="forumTitle" placeholder="Title">
+      <textarea id="forumBody" placeholder="Your question or info"></textarea>
+      <button onclick="addForumPost()">Post</button>
+    </div>
+  `;
+  window.addForumPost = function() {
+    let title = document.getElementById('forumTitle').value.trim();
+    let body = document.getElementById('forumBody').value.trim();
+    if (!title || !body) return alert("Title and body required!");
+    posts.push({ title, body });
+    store.set('forum_posts', posts);
+    renderForum(main);
+  };
+}
+
+// --- Resources Tab ---
+function renderResources(main) {
+  main.innerHTML = `
+    <div class="tab-content">
+      <h2>Resources</h2>
+      <ul>
+        <li><a href="https://create.roblox.com/docs" target="_blank">Roblox Creator Docs</a></li>
+        <li><a href="https://devforum.roblox.com/" target="_blank">Roblox DevForum</a></li>
+        <li><a href="https://scriptinghelpers.org/" target="_blank">Scripting Helpers</a></li>
+        <li><a href="https://github.com/EgoMoose/roblox-lua-promises" target="_blank">Roblox Lua Promises (GitHub)</a></li>
+      </ul>
+    </div>
+  `;
+}
+
+// --- Account Tab (Demo Only) ---
+function renderAccount(main) {
+  let user = store.get('user', null);
+  main.innerHTML = `
+    <div class="tab-content">
+      <h2>Account</h2>
+      ${user ? `
+        <p>Welcome, <b>${user.username}</b>!</p>
+        <button onclick="logout()">Logout</button>
+      ` : `
+        <input id="loginUser" placeholder="Username">
+        <input id="loginPass" type="password" placeholder="Password">
+        <button onclick="login()">Login</button>
+        <div class="helper-text">No real authentication yet (demo only)</div>
+      `}
+    </div>
+  `;
+  window.login = function() {
+    let username = document.getElementById('loginUser').value.trim();
+    let password = document.getElementById('loginPass').value.trim();
+    if (!username || !password) return alert("Username and password required!");
+    store.set('user', { username });
+    renderAccount(main);
+  };
+  window.logout = function() {
+    store.set('user', null);
+    renderAccount(main);
+  };
+}
+
+// --- Default Tab ---
+showTab('ai');
