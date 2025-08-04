@@ -1,25 +1,271 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Roblox Creator Hub</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Roblox Creator Hub - Pro Developer Platform</title>
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome for Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="styles.css">
+    
+    <!-- Meta Tags -->
+    <meta name="description" content="Professional Roblox development platform with AI assistant, script generator, and community tools">
+    <meta name="keywords" content="Roblox, development, scripting, AI, tools, creator">
+    <meta name="author" content="Roblox Creator Hub">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🚀%3C/text%3E%3C/svg%3E">
+    
+    <!-- Preload Critical Resources -->
+    <link rel="preload" href="styles.css" as="style">
+    <link rel="preload" href="app.js" as="script">
 </head>
 <body>
-  <canvas id="backgroundCanvas"></canvas>
-  <header>
-    <h1>Roblox Creator Hub</h1>
-    <nav>
-      <button onclick="showTab('ai')">AI Assistant</button>
-      <button onclick="showTab('scripts')">Scripts & Models</button>
-      <button onclick="showTab('forum')">Forum</button>
-      <button onclick="showTab('resources')">Resources</button>
-      <button onclick="showTab('account')">Account</button>
-    </nav>
-  </header>
-  <main id="mainSection"></main>
-  <script src="app.js"></script>
+    <!-- Animated Background Canvas -->
+    <canvas id="backgroundCanvas" aria-hidden="true"></canvas>
+    
+    <!-- Loading Screen -->
+    <div id="loadingScreen" class="loading-screen">
+        <div class="loading-container">
+            <div class="loading-logo">🚀</div>
+            <div class="loading-text">Roblox Creator Hub</div>
+            <div class="loading-subtitle">Loading your development workspace...</div>
+            <div class="loading-bar">
+                <div class="loading-progress"></div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Main Application -->
+    <div id="app" class="app-hidden">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-container">
+                <!-- Logo and Title -->
+                <div class="header-brand">
+                    <div class="logo-container">
+                        <div class="logo-icon">🚀</div>
+                        <div class="logo-text">
+                            <h1 class="brand-title">Roblox Creator Hub</h1>
+                            <p class="brand-subtitle">Professional Development Platform</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Navigation -->
+                <nav class="nav-container">
+                    <div class="nav-menu">
+                        <button class="nav-btn active" onclick="showTab('ai')" data-tab="ai">
+                            <i class="fas fa-robot"></i>
+                            <span>AI Assistant</span>
+                            <div class="nav-indicator"></div>
+                        </button>
+                        <button class="nav-btn" onclick="showTab('scripts')" data-tab="scripts">
+                            <i class="fas fa-code"></i>
+                            <span>Scripts & Tools</span>
+                            <div class="nav-indicator"></div>
+                        </button>
+                        <button class="nav-btn" onclick="showTab('forum')" data-tab="forum">
+                            <i class="fas fa-comments"></i>
+                            <span>Community</span>
+                            <div class="nav-indicator"></div>
+                        </button>
+                        <button class="nav-btn" onclick="showTab('resources')" data-tab="resources">
+                            <i class="fas fa-book"></i>
+                            <span>Resources</span>
+                            <div class="nav-indicator"></div>
+                        </button>
+                        <button class="nav-btn" onclick="showTab('account')" data-tab="account">
+                            <i class="fas fa-user"></i>
+                            <span>Account</span>
+                            <div class="nav-indicator"></div>
+                        </button>
+                    </div>
+                </nav>
+                
+                <!-- Header Actions -->
+                <div class="header-actions">
+                    <button class="action-btn" id="themeToggle" title="Toggle Theme">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                    <button class="action-btn" id="notificationsBtn" title="Notifications">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-badge">3</span>
+                    </button>
+                    <button class="action-btn" id="settingsBtn" title="Settings">
+                        <i class="fas fa-cog"></i>
+                    </button>
+                </div>
+            </div>
+        </header>
+        
+        <!-- Main Content Area -->
+        <main id="mainSection" class="main-content">
+            <!-- Content will be dynamically loaded here -->
+            <div class="welcome-screen">
+                <div class="welcome-container">
+                    <div class="welcome-icon">🎯</div>
+                    <h2>Welcome to Creator Hub</h2>
+                    <p>Your ultimate Roblox development companion</p>
+                    <div class="welcome-features">
+                        <div class="feature-pill">🤖 AI Assistant</div>
+                        <div class="feature-pill">💻 Script Generator</div>
+                        <div class="feature-pill">💬 Community Forum</div>
+                        <div class="feature-pill">📚 Learning Resources</div>
+                    </div>
+                </div>
+            </div>
+        </main>
+        
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-container">
+                <div class="footer-section">
+                    <p>&copy; 2024 Roblox Creator Hub. Empowering developers worldwide.</p>
+                </div>
+                <div class="footer-section">
+                    <div class="footer-stats">
+                        <span class="stat-item">
+                            <i class="fas fa-users"></i>
+                            <span class="stat-number" id="onlineUsers">1,247</span>
+                            <span class="stat-label">Developers Online</span>
+                        </span>
+                        <span class="stat-item">
+                            <i class="fas fa-code"></i>
+                            <span class="stat-number" id="scriptsGenerated">15,892</span>
+                            <span class="stat-label">Scripts Generated</span>
+                        </span>
+                        <span class="stat-item">
+                            <i class="fas fa-comments"></i>
+                            <span class="stat-number" id="communityPosts">4,521</span>
+                            <span class="stat-label">Community Posts</span>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+    
+    <!-- Notification Container -->
+    <div id="notificationContainer" class="notification-container" aria-live="polite"></div>
+    
+    <!-- Modal Container -->
+    <div id="modalContainer" class="modal-container"></div>
+    
+    <!-- Keyboard Shortcuts Help -->
+    <div id="shortcutsHelp" class="shortcuts-help hidden">
+        <div class="shortcuts-content">
+            <h3>⌨️ Keyboard Shortcuts</h3>
+            <div class="shortcut-list">
+                <div class="shortcut-item">
+                    <kbd>Ctrl</kbd> + <kbd>1-5</kbd>
+                    <span>Switch tabs</span>
+                </div>
+                <div class="shortcut-item">
+                    <kbd>Ctrl</kbd> + <kbd>N</kbd>
+                    <span>New AI chat</span>
+                </div>
+                <div class="shortcut-item">
+                    <kbd>Ctrl</kbd> + <kbd>S</kbd>
+                    <span>Save current work</span>
+                </div>
+                <div class="shortcut-item">
+                    <kbd>Ctrl</kbd> + <kbd>/</kbd>
+                    <span>Show shortcuts</span>
+                </div>
+                <div class="shortcut-item">
+                    <kbd>Esc</kbd>
+                    <span>Close modals</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Scripts -->
+    <script src="app.js"></script>
+    
+    <!-- Additional Functionality -->
+    <script>
+        // Loading screen animation
+        window.addEventListener('load', function() {
+            setTimeout(() => {
+                document.getElementById('loadingScreen').classList.add('hidden');
+                document.getElementById('app').classList.remove('app-hidden');
+            }, 2000);
+        });
+        
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey || e.metaKey) {
+                switch(e.key) {
+                    case '1': e.preventDefault(); showTab('ai'); break;
+                    case '2': e.preventDefault(); showTab('scripts'); break;
+                    case '3': e.preventDefault(); showTab('forum'); break;
+                    case '4': e.preventDefault(); showTab('resources'); break;
+                    case '5': e.preventDefault(); showTab('account'); break;
+                    case 'n': e.preventDefault(); if (window.newChat) newChat(); break;
+                    case '/': e.preventDefault(); toggleShortcuts(); break;
+                }
+            }
+            if (e.key === 'Escape') {
+                closeModals();
+            }
+        });
+        
+        function toggleShortcuts() {
+            const help = document.getElementById('shortcutsHelp');
+            help.classList.toggle('hidden');
+        }
+        
+        function closeModals() {
+            document.querySelectorAll('.modal-container .modal').forEach(modal => {
+                modal.remove();
+            });
+            document.getElementById('shortcutsHelp').classList.add('hidden');
+        }
+        
+        // Theme toggle
+        document.getElementById('themeToggle').addEventListener('click', function() {
+            document.body.classList.toggle('dark-theme');
+            const icon = this.querySelector('i');
+            icon.className = document.body.classList.contains('dark-theme') ? 'fas fa-sun' : 'fas fa-moon';
+        });
+        
+        // Animate stats in footer
+        function animateStats() {
+            const stats = document.querySelectorAll('.stat-number');
+            stats.forEach(stat => {
+                const target = parseInt(stat.textContent.replace(/,/g, ''));
+                const increment = target / 50;
+                let current = 0;
+                const timer = setInterval(() => {
+                    current += increment;
+                    if (current >= target) {
+                        current = target;
+                        clearInterval(timer);
+                    }
+                    stat.textContent = Math.floor(current).toLocaleString();
+                }, 30);
+            });
+        }
+        
+        // Start stats animation after page load
+        setTimeout(animateStats, 2500);
+        
+        // Update online users count periodically
+        setInterval(() => {
+            const onlineUsers = document.getElementById('onlineUsers');
+            const currentCount = parseInt(onlineUsers.textContent.replace(/,/g, ''));
+            const variation = Math.floor(Math.random() * 20) - 10; // ±10
+            const newCount = Math.max(1000, currentCount + variation);
+            onlineUsers.textContent = newCount.toLocaleString();
+        }, 30000); // Every 30 seconds
+    </script>
 </body>
 </html>
