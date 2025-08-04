@@ -3,62 +3,23 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Code Helper Hub</title>
+  <title>Roblox Creator Hub</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
   <canvas id="backgroundCanvas"></canvas>
   <header>
-    <h1>Code Helper Hub</h1>
+    <h1>Roblox Creator Hub</h1>
     <nav>
-      <button onclick="showSection('register')">Create Account</button>
-      <button onclick="showSection('scripts')">Find Scripts & Models</button>
-      <button onclick="showSection('ai')">AI Coding Assistant</button>
-      <button onclick="showSection('community')">Community</button>
-      <button onclick="showSection('resources')">Resources</button>
-      <button onclick="showSection('about')">About</button>
-      <button onclick="showSection('contact')">Contact</button>
+      <button onclick="showTab('ai')">AI Assistant</button>
+      <button onclick="showTab('scripts')">Scripts & Models</button>
+      <button onclick="showTab('forum')">Forum</button>
+      <button onclick="showTab('resources')">Resources</button>
+      <button onclick="showTab('account')">Account</button>
     </nav>
   </header>
-  <main id="mainSection">
-    <section>
-      <h2>Welcome to Code Helper Hub</h2>
-      <p>
-        Your all-in-one platform for scripts, models, AI coding help, and more!
-      </p>
-      <div class="feature-grid">
-        <div class="feature-card" onclick="showSection('register')">
-          <h3>Create Account</h3>
-          <p>Sign up to save your favorites and contribute.</p>
-        </div>
-        <div class="feature-card" onclick="showSection('scripts')">
-          <h3>Find Scripts & Models</h3>
-          <p>Browse, search, and share code and assets.</p>
-        </div>
-        <div class="feature-card" onclick="showSection('ai')">
-          <h3>AI Coding Assistant</h3>
-          <p>Get instant help with your code from AI.</p>
-        </div>
-        <div class="feature-card" onclick="showSection('community')">
-          <h3>Community</h3>
-          <p>Join discussions, ask questions, and help others.</p>
-        </div>
-        <div class="feature-card" onclick="showSection('resources')">
-          <h3>Resources</h3>
-          <p>Find tutorials, documentation, and learning tools.</p>
-        </div>
-        <div class="feature-card" onclick="showSection('about')">
-          <h3>About</h3>
-          <p>Learn more about Code Helper Hub.</p>
-        </div>
-        <div class="feature-card" onclick="showSection('contact')">
-          <h3>Contact</h3>
-          <p>Get in touch with our team.</p>
-        </div>
-      </div>
-    </section>
-  </main>
+  <main id="mainSection"></main>
   <script src="app.js"></script>
 </body>
 </html>
